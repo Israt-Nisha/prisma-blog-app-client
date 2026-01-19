@@ -1,7 +1,0 @@
- export default function ContactPage() {
-    return(
-        <div>
-            <h1> This is contact components</h1>
-        </div>
-    )
- }
