@@ -26,7 +26,7 @@ export default function DashboardLayout({
 }) {
 
   const userInfo = {
-    role: "user",
+    role: "admin",
   };
 
   return (
