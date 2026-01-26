@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
+import { toast } from "sonner"
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -28,32 +29,40 @@ const formSchema = z.object({
 });
 
 export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
+  const handleGoogleLogin = async () => {
+    const data = authClient.signIn.social({
+      provider: "google",
+      callbackURL: "http://localhost:3000",
+    });
 
-   const form = useForm({
+    console.log(data)
+  };
+
+  const form = useForm({
     defaultValues: {
       name: "",
       email: "",
       password: "",
     },
-    // validators: {
-    //   onSubmit: formSchema,
-    // },
+    validators: {
+      onSubmit: formSchema,
+    },
     onSubmit: async ({ value }) => {
-console.log(value);
+      console.log(value);
 
-      // const toastId = toast.loading("Creating user");
-      // try {
-      //   const { data, error } = await authClient.signUp.email(value);
+      const toastId = toast.loading("Creating user");
+      try {
+        const { data, error } = await authClient.signUp.email(value);
 
-      //   if (error) {
-      //     toast.error(error.message, { id: toastId });
-      //     return;
-      //   }
+        if (error) {
+          toast.error(error.message, { id: toastId });
+          return;
+        }
 
-      //   toast.success("User Created Successfully", { id: toastId });
-      // } catch (err) {
-      //   toast.error("Something went wrong, please try again.", { id: toastId });
-      // }
+        toast.success("User Created Successfully", { id: toastId });
+      } catch (err) {
+        toast.error("Something went wrong, please try again.", { id: toastId });
+      }
     },
   });
 
@@ -66,7 +75,7 @@ console.log(value);
         </CardDescription>
       </CardHeader>
       <CardContent>
-         <form
+        <form
           id="login-form"
           onSubmit={(e) => {
             e.preventDefault();
@@ -147,14 +156,14 @@ console.log(value);
         <Button form="login-form" type="submit" className="w-full">
           Register
         </Button>
-        {/* <Button
+        <Button
           onClick={() => handleGoogleLogin()}
           variant="outline"
           type="button"
           className="w-full"
         >
           Continue with Google
-        </Button> */}
+        </Button>
       </CardFooter>
     </Card>
   )
