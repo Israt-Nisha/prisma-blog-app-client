@@ -5,19 +5,19 @@ import { BlogPost } from '@/types';
 
 
 export default async function CreateBlog(){
-    const {data} = await blogService.getBlogPosts({}, {cache: "no-store"});
+    // const {data} = await blogService.getBlogPosts({}, {cache: "no-store"});
 
-    console.log(data)
+    // console.log(data)
 
 
     return (
         <div>
             <CreateBlogFormClient/>
-            {
+            {/* {
                 data.data.map((Item: BlogPost) => (
                     <p key={Item.id}>{Item.title}</p>
                 ))
-            }
+            } */}
         </div>
     );
 };
