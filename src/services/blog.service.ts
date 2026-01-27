@@ -1,4 +1,6 @@
 import { env } from "@/env";
+import { BlogData } from "@/types";
+import { cookies } from "next/headers";
 
 const API_URL = env.API_URL;
 
@@ -42,7 +44,16 @@ export const blogService = {
         config.next = { revalidate: options.revalidate };
       }
 
+      config.next = { ...config.next, tags: ["blogPosts"] };
+
       const res = await fetch(url.toString(), config);
+
+      // const res = await fetch(url.toString(), {
+      //   next: {
+      //     tags: ["blogPosts"],
+      //   },
+      // });
+
 
       const data = await res.json();
 
@@ -58,7 +69,7 @@ export const blogService = {
   },
 
 
-    getBlogById: async function (id: string) {
+  getBlogById: async function (id: string) {
     try {
       const res = await fetch(`${API_URL}/posts/${id}`);
 
@@ -69,5 +80,35 @@ export const blogService = {
       return { data: null, error: { message: "Something Went Wrong" } };
     }
   },
-  
+
+
+  createBlogPost: async (blogData: BlogData) => {
+    try {
+      const cookieStore = await cookies();
+
+      const res = await fetch(`${API_URL}/posts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookieStore.toString(),
+        },
+        body: JSON.stringify(blogData),
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+        return {
+          data: null,
+          error: { message: "Error: Post not created." },
+        };
+      }
+
+      return { data: data, error: null };
+    } catch (err) {
+      return { data: null, error: { message: "Something Went Wrong" } };
+    }
+  },
+
+
 };
